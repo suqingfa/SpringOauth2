@@ -49,6 +49,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return clientDetails;
             }
 
+            if ("client3".equals(clientId))
+            {
+                BaseClientDetails clientDetails = new BaseClientDetails();
+                clientDetails.setClientId(clientId);
+                clientDetails.setAuthorizedGrantTypes(Arrays.asList("authorization_code", "refresh_token"));
+                clientDetails.setScope(Collections.singletonList("all"));
+                clientDetails.setClientSecret(passwordEncoder.encode("123456"));
+                clientDetails.setRegisteredRedirectUri(Collections.singleton("http://localhost:8082/oauth"));
+                return clientDetails;
+            }
+
             throw new ClientRegistrationException("invalid client detail");
         };
     }
