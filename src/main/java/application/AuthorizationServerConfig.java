@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -23,6 +24,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 {
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Bean
     public ClientDetailsService clientDetailsService(PasswordEncoder passwordEncoder)
@@ -102,6 +105,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return clientDetails;
             }
 
+            /**
+             * 刷新授权码
+             * POST /oauth/token?grant_type=refresh_token&client_id=client1&client_secret=123456&refresh_token=5d8b83bb-8939-4767-93b5-6f317113eaf2
+             */
+
             throw new ClientRegistrationException("invalid client detail");
         };
     }
@@ -110,7 +118,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception
     {
         endpoints.tokenStore(new InMemoryTokenStore())
-                .authenticationManager(authenticationManager);
+                .authenticationManager(authenticationManager)
+                // 刷新授权码时需要设置 userDetailsService
+                .userDetailsService(userDetailsService);
     }
 
     @Override
