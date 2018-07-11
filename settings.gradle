@@ -1,2 +1,3 @@
 rootProject.name = 'SpringOauth2'
+include 'Resource'
 

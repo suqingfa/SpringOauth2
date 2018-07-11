@@ -39,6 +39,16 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return clientDetails;
             }
 
+            if ("client2".equals(clientId))
+            {
+                BaseClientDetails clientDetails = new BaseClientDetails();
+                clientDetails.setClientId(clientId);
+                clientDetails.setAuthorizedGrantTypes(Arrays.asList("client_credentials", "refresh_token"));
+                clientDetails.setScope(Collections.singletonList("all"));
+                clientDetails.setClientSecret(passwordEncoder.encode("123456"));
+                return clientDetails;
+            }
+
             throw new ClientRegistrationException("invalid client detail");
         };
     }
