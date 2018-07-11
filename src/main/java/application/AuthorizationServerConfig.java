@@ -29,7 +29,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     {
         return clientId ->
         {
-            /*
+            /**
             * 密码模式
             * 用户将用户名和密码发送第三方，第三方得到登录信息后加上自己的client_id和client_secret发送给授权服务器请求授权码
             * POST /oauth/token?grant_type=password&scope=all&client_id=client1&client_secret=123456&username=user&password=123456
@@ -44,7 +44,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return clientDetails;
             }
 
-            /*
+            /**
             * 客户模式
             * 第三方将自己的client_id和client_secret发送给授权服务器请求授权码
             * 得到的授权码一般用于一些公开接口的授权，如: /oauth/check_token
@@ -60,7 +60,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 return clientDetails;
             }
 
-            /*
+            /**
             * 授权码模式
             * 第三方引导用户访问授权服务器
             * GET /oauth/authorize?response_type=code&client_id=client3&redirect_uri=http://localhost:8082/oauth
@@ -76,6 +76,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 BaseClientDetails clientDetails = new BaseClientDetails();
                 clientDetails.setClientId(clientId);
                 clientDetails.setAuthorizedGrantTypes(Arrays.asList("authorization_code", "refresh_token"));
+                clientDetails.setScope(Collections.singletonList("all"));
+                clientDetails.setClientSecret(passwordEncoder.encode("123456"));
+                clientDetails.setRegisteredRedirectUri(Collections.singleton("http://localhost:8082/oauth"));
+                return clientDetails;
+            }
+
+            /**
+             * 简化模式
+             * 在浏览器向认证服务器请求token
+             * GET /oauth/authorize?response_type=token&client_id=client4&redirect_uri=http://localhost:8082/oauth
+             * 用户登录(如果之前没有登陆的话)
+             * 用户授权
+             * 授权完直接跳转到redirectUri并在url中携带access_token
+             * redirectUri http://localhost:8082/oauth#access_token=6169f3b5-afb3-4e82-a0e9-d59a7126258a&token_type=bearer&expires_in=43193&scope=all
+             */
+            if ("client4".equals(clientId))
+            {
+                BaseClientDetails clientDetails = new BaseClientDetails();
+                clientDetails.setClientId(clientId);
+                clientDetails.setAuthorizedGrantTypes(Arrays.asList("implicit", "refresh_token"));
                 clientDetails.setScope(Collections.singletonList("all"));
                 clientDetails.setClientSecret(passwordEncoder.encode("123456"));
                 clientDetails.setRegisteredRedirectUri(Collections.singleton("http://localhost:8082/oauth"));
