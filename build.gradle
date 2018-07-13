@@ -32,6 +32,7 @@ configure(allprojects) { project ->
     dependencies {
         compile(
                 'com.h2database:h2',
+                'commons-codec:commons-codec:1.+',
                 'org.springframework.boot:spring-boot-starter-data-jpa',
                 'org.springframework.boot:spring-boot-starter-freemarker',
                 'org.springframework.boot:spring-boot-starter-security',
